@@ -32,4 +32,10 @@ pip install matplotlib h5py numpy
 
 ## session log
 
-**2026-05-10** — started from a conversation about why computers use binary and whether there's something fundamentally better. explored ternary computing, DNA computing, photonic computing. landed on the idea of data traveling as a unified light signal and being decomposed by a passive structure — like a prism splitting white light. set up the repo. next step: write the first MEEP simulation for test 01.
+**2026-05-10** — started from a conversation about why computers use binary and whether there's something fundamentally better. explored ternary computing, DNA computing, photonic computing. landed on the idea of data traveling as a unified light signal and being decomposed by a passive structure — like a prism splitting white light. set up the repo. installed MEEP on WSL via miniconda. wrote and ran test 01.
+
+first run used a fixed refractive index (n=1.5 for all wavelengths). both wavelengths bent the same amount and landed in the same spot. result: inconclusive. this makes sense — if the material treats all colors the same, there's nothing to separate.
+
+second run added a dispersive material model (Lorentzian susceptibility) so the refractive index changes with wavelength, like real glass. result: PASS. separation ratios were 2.81 for 0.8μm vs 2.27 for 1.2μm — different enough to confirm the mechanism works.
+
+what the graph shows: both wavelengths are still mostly going to the same detector (upper), just at different intensities. the prism is bending light and dispersion is real, but the angular separation is too small with this geometry. it's like a prism that works but the rainbow is too narrow to read. next step is tuning the prism angle and detector positions to get cleaner separation.
