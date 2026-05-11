@@ -1,0 +1,33 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# virtual environments
+.venv/
+venv/
+env/
+
+# simulation output (large files)
+*.h5
+*.hdf5
+*.mp4
+
+# keep results directory but ignore large data files
+results/*.h5
+results/*.hdf5
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# conda
+*.conda
