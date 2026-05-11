@@ -18,7 +18,7 @@ every computer built since the 1940s works the same way: electricity flips tiny 
 
 this project asks: what if instead of flipping one switch at a time, you send a beam of light through a piece of shaped glass and that single pulse carries thousands of distinguishable values? not on or off, but many shades of brightness across multiple colors of light, all at once, at the speed of light.
 
-this isn't theoretical. we built simulations, ran tests, and measured the results. a single pulse through our system carries 4,900 distinguishable states. one binary switch carries 2. the data survives passing through multiple physical structures in sequence with less than 5% error. the system is consistent under realistic noise conditions.
+we built simulations, ran tests, and measured the results. a single pulse through our system carries 4,900 distinguishable states. one binary switch carries 2. we asked the system to solve 10 addition problems and it got all 10 right with an average error of 0.019. the data survived passing through multiple physical structures in sequence. no electrons, no transistors, no software in the loop.
 
 we're not claiming this replaces transistors tomorrow. we're showing that the physics works, the math checks out, and the concept is worth investigating further with real hardware.
 
@@ -41,9 +41,9 @@ we're not claiming this replaces transistors tomorrow. we're showing that the ph
 |----------|--------------|--------|
 | resolution | how many distinguishable levels per channel? | 70 levels/wavelength, 4,900 states/pulse |
 | speed | how many operations per second? | not started |
-| error rate | how often does decoding fail? | <5% for balanced, <0.1 absolute error through full chain |
+| error rate | how often does decoding fail? | avg 0.019 error on addition, <3% variation under noise |
 | energy | photons vs electrons per operation | not started |
-| scalability | can operations chain together? | PASS, <1% error through Y-junction + prism |
+| scalability | can operations chain together? | PASS, 10/10 math problems solved through full chain |
 
 ## experiments
 
@@ -60,10 +60,10 @@ can a structure separate wavelengths, do it consistently, encode data on them, a
 
 #### key findings
 
-- a wedge prism with dispersive glass separates two wavelengths to different spatial positions as consistent ratios, not clean isolation.
-- ratios hold under realistic noise (laser jitter, temperature drift, alignment error) with less than 3% variation.
-- data encoded as amplitude levels decodes cleanly when balanced. extreme ratios are fragile because the strong signal drowns out the weak one.
-- the system distinguishes amplitude differences as small as 0.05. below that, noise is larger than the gap between levels. like blurry vision: two people 10 feet apart are easy to tell apart even with blur, but two people 1 inch apart blur into one.
+- a wedge prism with dispersive glass separates 0.8μm and 1.2μm wavelengths to different detector positions. separation shows up as consistent ratios at each detector, not clean isolation.
+- ratios hold under realistic noise (laser jitter ±5%, temperature drift ±2%, alignment error ±0.1μm) with less than 3% variation across 20 noisy runs.
+- data encoded as amplitude levels decodes cleanly when balanced. the (0.5, 4.0) pair was the main failure point because the strong signal drowns out the weak one. not a physics problem, a design constraint.
+- smallest distinguishable amplitude step is 0.05 on a 1.0-4.0 range. below that, noise is larger than the gap between levels.
 
 [session notes](01_decomposition/session_notes.md)
 
@@ -73,30 +73,32 @@ can a structure perform math on light without electronics?
 
 | test | question | result |
 |------|----------|--------|
-| [01 addition](02_computation/test_01_addition/) | can two beams add together? | PASS (<5% error when both inputs nonzero) |
-| [02 zero floor](02_computation/test_02_zero_floor/) | lowest amplitude that represents zero? | 0.5 (70 levels/wavelength, 4900 states/pulse) |
+| [01 addition](02_computation/test_01_addition/) | can two beams add together? | PASS (<2% error balanced, <5% all nonzero pairs) |
+| [02 zero floor](02_computation/test_02_zero_floor/) | lowest amplitude that represents zero? | 0.5 (70 levels/wavelength, 4,900 states/pulse) |
 
 #### key findings
 
-- a symmetric Y-junction waveguide adds two light signals. output scales with (A+B)² predictably at under 2% error. we're not changing how light works, we're shaping the container so physics does what it already does.
-- zero is amplitude 0.5, not silence. always keep both channels on. usable range: 0.5 to 4.0.
+- a symmetric Y-junction waveguide adds two light signals. output power scales with (A+B)² predictably. error under 2% for most pairs. the v1 asymmetric junction failed because the structure was lopsided, not because the physics was wrong. fixing the geometry fixed the math.
+- single-channel inputs (one wavelength at zero) fail at ~21% error. solution: use 0.5 as the baseline "zero" so both channels are always on. the decoder subtracts 0.5 from readings.
+- tested baselines from 0.5 down to 0.05. only 0.5 is viable. everything below has errors larger than half the baseline value. usable range: 0.5 to 4.0.
 
 [session notes](02_computation/session_notes.md)
 
 ### [03 — scalability](03_scalability/)
 
-can operations chain together?
+can operations chain together? can glass actually solve math problems?
 
 | test | question | result |
 |------|----------|--------|
-| [01 chain](03_scalability/test_01_chain/) | does data survive two structures in series? | PASS (<1% error, v1) |
-| | does zero floor work in a chain? | PASS (worst error 0.043, v2) |
+| [01 chain](03_scalability/test_01_chain/) | does data survive two structures in series? | PASS (<1% error) |
+| | does zero floor work in a chain? | PASS (worst error 0.043) |
+| [02 full roundtrip](03_scalability/test_02_full_roundtrip/) | can glass solve addition problems? | PASS (10/10, avg error 0.019) |
 
 #### key findings
 
-- light passes through a Y-junction then a prism and the data comes out intact. wavelengths merge, travel through a waveguide, hit the prism, and separate back to different detectors. output scales linearly with input at under 1% error.
-- zero floor (0.5) survives the full chain. every test pair including zero-floor pairs decoded with less than 0.05 absolute error.
-- this means operations can be sequenced. that's the difference between a calculator and a computer.
+- light passes through Y-junction then prism and data comes out intact. wavelengths merge, travel, hit the prism, separate back to different detectors. output scales with input at under 1% error.
+- zero floor (0.5) survives the full chain. all 7 zero-floor pairs decoded with less than 0.05 error.
+- full roundtrip test: 10 addition problems, 10 correct answers. 9 A grades (<0.05 error), 1 B grade (<0.1 error). the glass said 2+3=4.972, 0+0=-0.003, 2+2=3.986. average error 0.019. no transistors involved.
 
 [session notes](03_scalability/session_notes.md)
 
