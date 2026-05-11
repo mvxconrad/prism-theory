@@ -6,18 +6,26 @@
 
 started asking why computers use binary. realized it's not because base 2 is optimal — it's because transistors only have two reliable states. every abstraction layer we've built since exists because the foundation isn't expressive enough. what if information never had to stop being information? landed on light as a data carrier, passive structures as interpreters.
 
-### test 01 results
+### test 01 — prism separation
 
-**v1 — basic prism, fixed index.** INCONCLUSIVE. no dispersion = no separation. simulation works though.
+can a structure separate two wavelengths entering as one beam?
 
-**v2 — steep prism, dispersive material (sigma=1.2).** FAIL. both wavelengths still peak at center. ratios differ (2.81 vs 2.27) so dispersion is working, just not enough angular spread.
+**v1 — fixed index.** INCONCLUSIVE. no dispersion = no separation.
 
-**v3 — wedge prism, stronger dispersion (sigma=3.0).** PASS. 0.8μm peaks at y=0, 1.2μm peaks at y=-4. separation is real but messy — overlap at every detector, difference is in the ratios not clean isolation.
+**v2 — steep prism, dispersion (sigma=1.2).** FAIL. ratios differ but both peak at same detector.
 
-### what the graph shows
+**v3 — wedge prism, stronger dispersion (sigma=3.0).** PASS. 0.8μm peaks at y=0, 1.2μm peaks at y=-4. separation is in the ratios not clean isolation.
 
-both wavelengths show up everywhere but at different intensities. at y=-4 the 1.2μm signal is ~2.3x stronger than 0.8μm. at y=0 they're nearly equal. this ratio difference is the usable signal.
+### test 02 — consistency
 
-### next
+are the separation ratios constant across different conditions?
 
-separation doesn't need to be perfect if it's consistent. plan: vary input amplitudes across multiple runs and check if the ratios at each detector stay constant. if they do, we can calibrate for it and read data reliably.
+**v1 — varying amplitude.** PASS but meaningless. MEEP is deterministic so identical physics = identical output. same as solving 2+2 ten times.
+
+**v2 — with noise (laser jitter ±5%, temp drift ±2%, alignment ±0.1μm).** PASS. worst variation 2.65%, best 0.88%. the ratios hold up under realistic physical noise.
+
+### test 03 — encoding
+
+can we encode data as amplitudes on two wavelengths and decode it from detector readings?
+
+**v1 — calibration.** 7/8 messages decoded within 0.1 error. avg max error 0.039. the one miss was (0.5, 4.0) → decoded as (0.307, 4.019). when one wavelength is very weak and the other is very strong, the strong signal drowns out the weak one — harder to recover. basically: encoding works. we sent data as light, a prism decomposed it, and we read the original values back. next step: does it hold up with noise?
