@@ -20,7 +20,7 @@ can a structure separate two wavelengths of light that enter as one beam?
 
 **status: PASS (v3)**
 
-![v3 results](01_decomposition/01_decomposition_v3_results.png)
+![v3 results](01_decomposition/test_01_prism_separation/results/v3_results.png)
 
 wedge prism with dispersive material separates 0.8μm and 1.2μm to different detectors. separation is in the ratios not clean isolation — next step is testing whether those ratios are consistent across varying inputs.
 
